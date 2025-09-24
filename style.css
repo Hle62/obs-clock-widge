@@ -16,22 +16,24 @@
     --shadow-color: rgba(0, 0, 0, 0.6);
     --bg-width: 500px;
     --bg-height: 200px;
-    --pos-x: 50%;
-    --pos-y: 50%;
     --border-width: 0px;
     --border-color: #FFFFFF;
     --border-radius: 10px;
     --preview-bg-color: #FFFFFF;
     --text-shadow-value: 2px 2px 6px var(--shadow-color);
     --box-shadow-value: 0 4px 15px var(--shadow-color);
+    --time-pos-x: 50%;
+    --time-pos-y: 50%;
+    --date-pos-x: 50%;
+    --date-pos-y: 70%;
+    --day-pos-x: 70%;
+    --day-pos-y: 70%;
 }
 
 /* * 全体的な設定
  */
 body {
-    /* OBSでの背景透過を可能にする */
     background-color: var(--preview-bg-color); 
-    
     font-family: 'Roboto', sans-serif;
     color: #f0f0f0;
     margin: 0;
@@ -40,22 +42,21 @@ body {
     align-items: center;
     height: 100vh;
     padding: 20px;
-    box-sizing: border-box; /* パディングを含めてサイズを計算 */
+    box-sizing: border-box;
 }
 
 #app {
     display: flex;
-    flex-direction: row; /* 要素を横に並べる */
-    gap: 60px; /* 要素間の隙間を調整 */
-    align-items: center; /* プレビューと設定パネルを上下中央に揃える */
+    flex-direction: row;
+    gap: 60px;
+    align-items: center;
     width: 100%;
-    max-width: 1200px; /* 最大幅を設定して見やすくする */
+    max-width: 1200px;
     justify-content: center;
 }
 
 /*
  * 時計のプレビューコンテナ
- * OBSで時計のサイズを調整する際のガイドとして機能
  */
 #preview-container {
     width: var(--bg-width);
@@ -63,29 +64,41 @@ body {
     background-color: rgba(45, 45, 45, 0.8);
     border-radius: 10px;
     box-shadow: var(--box-shadow-value);
-    position: relative; /* 子要素の絶対配置を可能にする */
+    position: relative;
     border-style: solid;
     border-width: var(--border-width);
     border-color: var(--border-color);
     border-radius: var(--border-radius);
     transition: all 0.3s ease;
-    flex-shrink: 0; /* 縮小しないように設定 */
+    flex-shrink: 0;
 }
 
 /*
- * 時計本体のデザイン
+ * 各要素（時刻、日付、曜日）のデザイン
  */
-#clock {
+#time-display, #date-display, #day-display {
     font-family: var(--clock-font);
     color: var(--clock-color);
     font-size: var(--clock-size);
     text-shadow: var(--text-shadow-value);
     transition: all 0.3s ease;
-    cursor: default; /* カーソルをデフォルトに戻す */
-    position: absolute; /* 親要素内で自由に配置 */
-    left: var(--pos-x); /* 新しいX軸の位置変数 */
-    top: var(--pos-y); /* 新しいY軸の位置変数 */
-    transform: translate(-50%, -50%); /* 中央配置 */
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+#time-display {
+    left: var(--time-pos-x);
+    top: var(--time-pos-y);
+}
+
+#date-display {
+    left: var(--date-pos-x);
+    top: var(--date-pos-y);
+}
+
+#day-display {
+    left: var(--day-pos-x);
+    top: var(--day-pos-y);
 }
 
 /*
@@ -97,8 +110,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 15px var(--shadow-color);
     width: 350px;
-    max-height: calc(100vh - 40px); /* 画面の高さを考慮して最大高さを設定 */
-    overflow-y: auto; /* 設定項目が多くなったら縦スクロールを有効にする */
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     box-sizing: border-box;
 }
 
@@ -113,9 +126,6 @@ body {
     margin-bottom: 20px;
 }
 
-/*
- * フォーム部品のスタイル
- */
 input[type="color"] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -131,6 +141,11 @@ input[type="color"] {
 input[type="range"] {
     width: 100%;
     cursor: pointer;
+}
+
+input[type="number"] {
+    width: 50px;
+    text-align: right;
 }
 
 select {

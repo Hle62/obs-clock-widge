@@ -11,7 +11,9 @@
 <body>
     <div id="app">
         <div id="preview-container">
-            <div id="clock"></div>
+            <span id="time-display"></span>
+            <span id="date-display"></span>
+            <span id="day-display"></span>
         </div>
         <div id="control-panel">
             <h2>時計デザイン設定</h2>
@@ -122,20 +124,53 @@
             <hr>
 
             <div class="control-group">
-                <h3>時計の位置</h3>
-                <label for="pos-x-slider">左右の位置:</label>
-                <input type="range" id="pos-x-slider" min="0" max="100" value="50">
-                <input type="number" id="pos-x-input" class="value-input" min="0" max="100" value="50"> %
+                <h3>時刻の位置</h3>
+                <label for="time-pos-x-slider">左右の位置:</label>
+                <input type="range" id="time-pos-x-slider" min="0" max="100" value="50">
+                <input type="number" id="time-pos-x-input" class="value-input" min="0" max="100" value="50"> %
             </div>
 
             <div class="control-group">
-                <label for="pos-y-slider">上下の位置:</label>
-                <input type="range" id="pos-y-slider" min="0" max="100" value="50">
-                <input type="number" id="pos-y-input" class="value-input" min="0" max="100" value="50"> %
+                <label for="time-pos-y-slider">上下の位置:</label>
+                <input type="range" id="time-pos-y-slider" min="0" max="100" value="50">
+                <input type="number" id="time-pos-y-input" class="value-input" min="0" max="100" value="50"> %
+            </div>
+            <p>※時刻は中央が基準になります</p>
+            
+            <hr>
+
+            <div class="control-group">
+                <h3>日付の位置</h3>
+                <label for="date-pos-x-slider">左右の位置:</label>
+                <input type="range" id="date-pos-x-slider" min="0" max="100" value="50">
+                <input type="number" id="date-pos-x-input" class="value-input" min="0" max="100" value="50"> %
             </div>
 
-            <p>※時計は中央が基準になります</p>
-            
+            <div class="control-group">
+                <label for="date-pos-y-slider">上下の位置:</label>
+                <input type="range" id="date-pos-y-slider" min="0" max="100" value="70">
+                <input type="number" id="date-pos-y-input" class="value-input" min="0" max="100" value="70"> %
+            </div>
+
+            <p>※日付は中央が基準になります</p>
+
+            <hr>
+
+            <div class="control-group">
+                <h3>曜日の位置</h3>
+                <label for="day-pos-x-slider">左右の位置:</label>
+                <input type="range" id="day-pos-x-slider" min="0" max="100" value="70">
+                <input type="number" id="day-pos-x-input" class="value-input" min="0" max="100" value="70"> %
+            </div>
+
+            <div class="control-group">
+                <label for="day-pos-y-slider">上下の位置:</label>
+                <input type="range" id="day-pos-y-slider" min="0" max="100" value="70">
+                <input type="number" id="day-pos-y-input" class="value-input" min="0" max="100" value="70"> %
+            </div>
+
+            <p>※曜日は中央が基準になります</p>
+
             <hr>
 
             <div class="control-group">

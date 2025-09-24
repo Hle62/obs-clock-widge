@@ -1,5 +1,7 @@
 // HTML要素を取得
-const clockElement = document.getElementById('clock');
+const timeDisplay = document.getElementById('time-display');
+const dateDisplay = document.getElementById('date-display');
+const dayDisplay = document.getElementById('day-display');
 const fontSelect = document.getElementById('font-select');
 const colorPicker = document.getElementById('color-picker');
 
@@ -43,6 +45,21 @@ const textShadowToggle = document.getElementById('text-shadow-toggle');
 const boxShadowToggle = document.getElementById('box-shadow-toggle');
 const previewBgColorPicker = document.getElementById('preview-bg-color-picker');
 
+const timePosXSlider = document.getElementById('time-pos-x-slider');
+const timePosXInput = document.getElementById('time-pos-x-input');
+const timePosYSlider = document.getElementById('time-pos-y-slider');
+const timePosYInput = document.getElementById('time-pos-y-input');
+
+const datePosXSlider = document.getElementById('date-pos-x-slider');
+const datePosXInput = document.getElementById('date-pos-x-input');
+const datePosYSlider = document.getElementById('date-pos-y-slider');
+const datePosYInput = document.getElementById('date-pos-y-input');
+
+const dayPosXSlider = document.getElementById('day-pos-x-slider');
+const dayPosXInput = document.getElementById('day-pos-x-input');
+const dayPosYSlider = document.getElementById('day-pos-y-slider');
+const dayPosYInput = document.getElementById('day-pos-y-input');
+
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
 
@@ -66,7 +83,7 @@ function updateClock() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
     
-    let timeString = `${String(hours).padStart(2, '0')}:${minutes}:${seconds}${ampm}`;
+    timeDisplay.textContent = `${String(hours).padStart(2, '0')}:${minutes}:${seconds}${ampm}`;
 
     let dateString = '';
     let dayString = '';
@@ -77,14 +94,13 @@ function updateClock() {
         const day = String(now.getDate()).padStart(2, '0');
         dateString = `${year}/${month}/${day}`;
     }
+    dateDisplay.textContent = dateString;
 
     if (dayToggle.checked) {
         const days = ['日', '月', '火', '水', '木', '金', '土'];
         dayString = `(${days[now.getDay()]})`;
     }
-
-    const displayString = `${timeString} ${dateString} ${dayString}`.trim();
-    clockElement.textContent = displayString;
+    dayDisplay.textContent = dayString;
 }
 
 // ----------------------------------------------------
@@ -105,8 +121,12 @@ function updateUrl() {
         borderColor: borderColorPicker.value.replace('#', ''),
         borderWidth: borderWidthSlider.value,
         borderRadius: borderRadiusSlider.value,
-        posX: posxSlider.value,
-        posY: posySlider.value,
+        timePosX: timePosXSlider.value,
+        timePosY: timePosYSlider.value,
+        datePosX: datePosXSlider.value,
+        datePosY: datePosYSlider.value,
+        dayPosX: dayPosXSlider.value,
+        dayPosY: dayPosYSlider.value,
         bgWidth: bgWidthSlider.value,
         bgHeight: bgHeightSlider.value,
         bg: bgToggle.checked ? 'true' : 'false',
@@ -127,10 +147,13 @@ function updateAll() {
     root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
     root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
 
-    root.style.setProperty('--pos-x', `${posxSlider.value}%`);
-    root.style.setProperty('--pos-y', `${posySlider.value}%`);
+    root.style.setProperty('--time-pos-x', `${timePosXSlider.value}%`);
+    root.style.setProperty('--time-pos-y', `${timePosYSlider.value}%`);
+    root.style.setProperty('--date-pos-x', `${datePosXSlider.value}%`);
+    root.style.setProperty('--date-pos-y', `${datePosYSlider.value}%`);
+    root.style.setProperty('--day-pos-x', `${dayPosXSlider.value}%`);
+    root.style.setProperty('--day-pos-y', `${dayPosYSlider.value}%`);
     
-    // 背景のオンオフ
     if(bgToggle.checked) {
         previewContainer.style.backgroundColor = 'rgba(45, 45, 45, 0.8)';
     } else {
@@ -160,33 +183,53 @@ function updateAll() {
 
     root.style.setProperty('--preview-bg-color', previewBgColorPicker.value);
 
+    // スライダーと入力欄の値を同期
+    sizeInput.value = sizeSlider.value;
+    borderWidthInput.value = borderWidthSlider.value;
+    borderRadiusInput.value = borderRadiusSlider.value;
+    bgWidthInput.value = bgWidthSlider.value;
+    bgHeightInput.value = bgHeightSlider.value;
+    timePosXInput.value = timePosXSlider.value;
+    timePosYInput.value = timePosYSlider.value;
+    datePosXInput.value = datePosXSlider.value;
+    datePosYInput.value = datePosYSlider.value;
+    dayPosXInput.value = dayPosXSlider.value;
+    dayPosYInput.value = dayPosYSlider.value;
+
     updateClock();
     updateUrl();
 }
 
 const allElements = [
-    fontSelect, colorPicker, sizeSlider, sizeInput, dateToggle, dayToggle, formatSelect,
-    borderToggle, borderColorPicker, borderWidthSlider, borderWidthInput, borderRadiusSlider, borderRadiusInput,
-    bgWidthSlider, bgWidthInput, bgHeightSlider, bgHeightInput,
-    posxSlider, posxInput, posySlider, posyInput,
+    fontSelect, colorPicker, dateToggle, dayToggle, formatSelect,
+    borderToggle, borderColorPicker,
     bgToggle, textShadowToggle, boxShadowToggle, previewBgColorPicker
 ];
 
+// スライダーと入力欄の同期
+const syncSliders = [
+    { slider: sizeSlider, input: sizeInput },
+    { slider: borderWidthSlider, input: borderWidthInput },
+    { slider: borderRadiusSlider, input: borderRadiusInput },
+    { slider: bgWidthSlider, input: bgWidthInput },
+    { slider: bgHeightSlider, input: bgHeightInput },
+    { slider: timePosXSlider, input: timePosXInput },
+    { slider: timePosYSlider, input: timePosYInput },
+    { slider: datePosXSlider, input: datePosXInput },
+    { slider: datePosYSlider, input: datePosYInput },
+    { slider: dayPosXSlider, input: dayPosXInput },
+    { slider: dayPosYSlider, input: dayPosYInput },
+];
+
+syncSliders.forEach(pair => {
+    pair.slider.addEventListener('input', () => { pair.input.value = pair.slider.value; updateAll(); });
+    pair.input.addEventListener('input', () => { pair.slider.value = pair.input.value; updateAll(); });
+});
+
 allElements.forEach(element => {
-    element.addEventListener('input', () => {
-        // スライダーと入力欄の同期
-        if (element.type === 'range') {
-            document.getElementById(element.id.replace('slider', 'input')).value = element.value;
-        } else if (element.type === 'number') {
-            document.getElementById(element.id.replace('input', 'slider')).value = element.value;
-        }
-        updateAll();
-    });
-    // changeイベントも追加
     element.addEventListener('change', updateAll);
 });
 
-// 背景のオンオフと背景の影の連動機能
 bgToggle.addEventListener('change', () => {
     if (bgToggle.checked) {
         boxShadowToggle.checked = true;
@@ -227,8 +270,12 @@ function applySettingsFromUrl() {
     const borderColor = params.get('borderColor');
     const borderWidth = params.get('borderWidth');
     const borderRadius = params.get('borderRadius');
-    const posX = params.get('posX');
-    const posY = params.get('posY');
+    const timePosX = params.get('timePosX');
+    const timePosY = params.get('timePosY');
+    const datePosX = params.get('datePosX');
+    const datePosY = params.get('datePosY');
+    const dayPosX = params.get('dayPosX');
+    const dayPosY = params.get('dayPosY');
     const bgWidth = params.get('bgWidth');
     const bgHeight = params.get('bgHeight');
     const bg = params.get('bg');
@@ -236,70 +283,28 @@ function applySettingsFromUrl() {
     const boxShadow = params.get('boxShadow');
     const previewBgColor = params.get('previewBgColor');
 
-    if (font) {
-        fontSelect.value = font;
-    }
-    if (color) {
-        colorPicker.value = `#${color}`;
-    }
-    if (size) {
-        sizeSlider.value = size;
-        sizeInput.value = size;
-    }
-    if (date) {
-        dateToggle.checked = date === 'true';
-    }
-    if (day) {
-        dayToggle.checked = day === 'true';
-    }
-    if (format) {
-        formatSelect.value = format;
-    }
-    if (border) {
-        borderToggle.checked = border === 'true';
-    }
-    if (borderColor) {
-        borderColorPicker.value = `#${borderColor}`;
-    }
-    if (borderWidth) {
-        borderWidthSlider.value = borderWidth;
-        borderWidthInput.value = borderWidth;
-    }
-    if (borderRadius) {
-        borderRadiusSlider.value = borderRadius;
-        borderRadiusInput.value = borderRadius;
-    }
-    if (posX) {
-        posxSlider.value = posX;
-        posxInput.value = posX;
-    }
-    if (posY) {
-        posySlider.value = posY;
-        posyInput.value = posY;
-    }
-    if (bgWidth) {
-        bgWidthSlider.value = bgWidth;
-        bgWidthInput.value = bgWidth;
-    }
-    if (bgHeight) {
-        bgHeightSlider.value = bgHeight;
-        bgHeightInput.value = bgHeight;
-    }
-    if (bg) {
-        bgToggle.checked = bg === 'true';
-    }
-    if (textShadow) {
-        textShadowToggle.checked = textShadow === 'true';
-    }
-    if (boxShadow) {
-        boxShadowToggle.checked = boxShadow === 'true';
-    }
-    if (previewBgColor) {
-        previewBgColorPicker.value = `#${previewBgColor}`;
-    } else {
-        // URLに背景色が指定されていない場合、デフォルトの白に設定
-        previewBgColorPicker.value = `#FFFFFF`;
-    }
+    if (font) { fontSelect.value = font; }
+    if (color) { colorPicker.value = `#${color}`; }
+    if (size) { sizeSlider.value = size; sizeInput.value = size; }
+    if (date) { dateToggle.checked = date === 'true'; }
+    if (day) { dayToggle.checked = day === 'true'; }
+    if (format) { formatSelect.value = format; }
+    if (border) { borderToggle.checked = border === 'true'; }
+    if (borderColor) { borderColorPicker.value = `#${borderColor}`; }
+    if (borderWidth) { borderWidthSlider.value = borderWidth; borderWidthInput.value = borderWidth; }
+    if (borderRadius) { borderRadiusSlider.value = borderRadius; borderRadiusInput.value = borderRadius; }
+    if (timePosX) { timePosXSlider.value = timePosX; timePosXInput.value = timePosX; }
+    if (timePosY) { timePosYSlider.value = timePosY; timePosYInput.value = timePosY; }
+    if (datePosX) { datePosXSlider.value = datePosX; datePosXInput.value = datePosX; }
+    if (datePosY) { datePosYSlider.value = datePosY; datePosYInput.value = datePosY; }
+    if (dayPosX) { dayPosXSlider.value = dayPosX; dayPosXInput.value = dayPosX; }
+    if (dayPosY) { dayPosYSlider.value = dayPosY; dayPosYInput.value = dayPosY; }
+    if (bgWidth) { bgWidthSlider.value = bgWidth; bgWidthInput.value = bgWidth; }
+    if (bgHeight) { bgHeightSlider.value = bgHeight; bgHeightInput.value = bgHeight; }
+    if (bg) { bgToggle.checked = bg === 'true'; }
+    if (textShadow) { textShadowToggle.checked = textShadow === 'true'; }
+    if (boxShadow) { boxShadowToggle.checked = boxShadow === 'true'; }
+    if (previewBgColor) { previewBgColorPicker.value = `#${previewBgColor}`; } else { previewBgColorPicker.value = `#FFFFFF`; }
 
     updateAll();
     updateClock();
