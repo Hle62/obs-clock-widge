@@ -14,8 +14,8 @@
     --clock-color: #FFFFFF;
     --clock-size: 60px;
     --shadow-color: rgba(0, 0, 0, 0.6);
-    --bg-width: 500px;
-    --bg-height: 200px;
+    --bg-width: 600px;
+    --bg-height: 250px;
 }
 
 /* * 全体的な設定
@@ -38,8 +38,8 @@ body {
 #app {
     display: flex;
     flex-direction: row; /* 要素を横に並べる */
-    gap: 40px; /* 要素間の隙間を調整 */
-    align-items: flex-start; /* 上端を揃える */
+    gap: 60px; /* 要素間の隙間を調整 */
+    align-items: center; /* プレビューと設定パネルを上下中央に揃える */
     width: 100%;
     max-width: 1200px; /* 最大幅を設定して見やすくする */
     justify-content: center;
