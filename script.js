@@ -186,6 +186,17 @@ allElements.forEach(element => {
     element.addEventListener('change', updateAll);
 });
 
+// 背景のオンオフと背景の影の連動機能
+bgToggle.addEventListener('change', () => {
+    if (bgToggle.checked) {
+        boxShadowToggle.checked = true;
+    } else {
+        boxShadowToggle.checked = false;
+    }
+    updateAll();
+});
+
+
 copyButton.addEventListener('click', () => {
     obsUrlInput.select();
     navigator.clipboard.writeText(obsUrlInput.value)
