@@ -29,15 +29,20 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
-    align-items: center; /* プレビューとコントロールパネルを上下中央に配置 */
+    align-items: center;
     height: 100vh;
-    padding-top: 50px;
+    padding: 20px;
+    box-sizing: border-box; /* パディングを含めてサイズを計算 */
 }
 
 #app {
     display: flex;
-    gap: 50px;
-    align-items: center; /* プレビューとコントロールパネルを上下中央に配置 */
+    flex-direction: row; /* 要素を横に並べる */
+    gap: 40px; /* 要素間の隙間を調整 */
+    align-items: flex-start; /* 上端を揃える */
+    width: 100%;
+    max-width: 1200px; /* 最大幅を設定して見やすくする */
+    justify-content: center;
 }
 
 /*
@@ -56,6 +61,7 @@ body {
     border-color: var(--border-color);
     border-radius: var(--border-radius);
     transition: all 0.3s ease;
+    flex-shrink: 0; /* 縮小しないように設定 */
 }
 
 /*
@@ -79,12 +85,13 @@ body {
  */
 #control-panel {
     background-color: rgba(45, 45, 45, 0.8);
-    padding: 20px;
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 15px var(--shadow-color);
-    width: 300px;
-    max-height: 80vh; /* 画面の高さの80%までに制限 */
-    overflow-y: auto; /* 80vhを超えたら縦スクロール可能にする */
+    width: 350px;
+    max-height: calc(100vh - 40px); /* 画面の高さを考慮して最大高さを設定 */
+    overflow-y: auto; /* 設定項目が多くなったら縦スクロールを有効にする */
+    box-sizing: border-box;
 }
 
 #control-panel h2, #control-panel h3 {
