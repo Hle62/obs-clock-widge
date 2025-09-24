@@ -2,8 +2,7 @@
 const clockElement = document.getElementById('clock');
 const fontSelect = document.getElementById('font-select');
 const colorPicker = document.getElementById('color-picker');
-const sizeSlider = document.getElementById('size-slider');
-const sizeValueSpan = document.getElementById('size-value');
+
 const obsUrlInput = document.getElementById('obs-url-input');
 const copyButton = document.getElementById('copy-button');
 const previewContainer = document.getElementById('preview-container');
@@ -16,22 +15,29 @@ const formatSelect = document.getElementById('format-select');
 // 新しい要素を追加
 const borderToggle = document.getElementById('border-toggle');
 const borderColorPicker = document.getElementById('border-color-picker');
+
+// スライダーとテキスト入力欄のペア
+const sizeSlider = document.getElementById('size-slider');
+const sizeInput = document.getElementById('size-input');
+
 const borderWidthSlider = document.getElementById('border-width-slider');
-const borderWidthValueSpan = document.getElementById('border-width-value');
+const borderWidthInput = document.getElementById('border-width-input');
+
 const borderRadiusSlider = document.getElementById('border-radius-slider');
-const borderRadiusValueSpan = document.getElementById('border-radius-value');
+const borderRadiusInput = document.getElementById('border-radius-input');
 
-// 新しい要素を追加
 const bgWidthSlider = document.getElementById('bg-width-slider');
-const bgWidthValueSpan = document.getElementById('bg-width-value');
-const bgHeightSlider = document.getElementById('bg-height-slider');
-const bgHeightValueSpan = document.getElementById('bg-height-value');
+const bgWidthInput = document.getElementById('bg-width-input');
 
-// 新しい要素を追加
+const bgHeightSlider = document.getElementById('bg-height-slider');
+const bgHeightInput = document.getElementById('bg-height-input');
+
 const posxSlider = document.getElementById('pos-x-slider');
-const posxValueSpan = document.getElementById('pos-x-value');
+const posxInput = document.getElementById('pos-x-input');
+
 const posySlider = document.getElementById('pos-y-slider');
-const posyValueSpan = document.getElementById('pos-y-value');
+const posyInput = document.getElementById('pos-y-input');
+
 
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
@@ -105,40 +111,61 @@ function updateUrl() {
     obsUrlInput.value = `${baseUrl}?${params.toString()}`;
 }
 
-const allElements = [
-    fontSelect, colorPicker, sizeSlider, dateToggle, dayToggle, formatSelect,
-    borderToggle, borderColorPicker, borderWidthSlider, borderRadiusSlider,
-    bgWidthSlider, bgHeightSlider, posxSlider, posySlider
-];
+// スライダーと入力欄の値を同期させる関数
+function syncValues(slider, input) {
+    slider.value = input.value;
+    updateAll();
+}
 
-allElements.forEach(element => {
-    element.addEventListener('input', () => {
-        root.style.setProperty('--clock-font', fontSelect.value);
-        root.style.setProperty('--clock-color', colorPicker.value);
-        root.style.setProperty('--clock-size', `${sizeSlider.value}px`);
-        root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
-        root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
-        root.style.setProperty('--pos-x', `${posxSlider.value}%`);
-        root.style.setProperty('--pos-y', `${posySlider.value}%`);
+function updateAll() {
+    root.style.setProperty('--clock-font', fontSelect.value);
+    root.style.setProperty('--clock-color', colorPicker.value);
+    root.style.setProperty('--clock-size', `${sizeSlider.value}px`);
 
-        if (borderToggle.checked) {
-            root.style.setProperty('--border-width', `${borderWidthSlider.value}px`);
-            root.style.setProperty('--border-color', borderColorPicker.value);
-            root.style.setProperty('--border-radius', `${borderRadiusSlider.value}px`);
-        } else {
-            root.style.setProperty('--border-width', `0px`);
-        }
-        
-        borderWidthValueSpan.textContent = `${borderWidthSlider.value}px`;
-        borderRadiusValueSpan.textContent = `${borderRadiusSlider.value}px`;
-        bgWidthValueSpan.textContent = `${bgWidthSlider.value}px`;
-        bgHeightValueSpan.textContent = `${bgHeightSlider.value}px`;
-        posxValueSpan.textContent = `${posxSlider.value}%`;
-        posyValueSpan.textContent = `${posySlider.value}%`;
-        
-        updateClock();
-        updateUrl();
-    });
+    root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
+    root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
+
+    root.style.setProperty('--pos-x', `${posxSlider.value}%`);
+    root.style.setProperty('--pos-y', `${posySlider.value}%`);
+
+    if (borderToggle.checked) {
+        root.style.setProperty('--border-width', `${borderWidthSlider.value}px`);
+        root.style.setProperty('--border-color', borderColorPicker.value);
+        root.style.setProperty('--border-radius', `${borderRadiusSlider.value}px`);
+    } else {
+        root.style.setProperty('--border-width', `0px`);
+    }
+
+    updateClock();
+    updateUrl();
+}
+
+// スライダーと入力欄のイベントリスナーを設定
+sizeSlider.addEventListener('input', () => { sizeInput.value = sizeSlider.value; updateAll(); });
+sizeInput.addEventListener('input', () => { sizeSlider.value = sizeInput.value; updateAll(); });
+
+borderWidthSlider.addEventListener('input', () => { borderWidthInput.value = borderWidthSlider.value; updateAll(); });
+borderWidthInput.addEventListener('input', () => { borderWidthSlider.value = borderWidthInput.value; updateAll(); });
+
+borderRadiusSlider.addEventListener('input', () => { borderRadiusInput.value = borderRadiusSlider.value; updateAll(); });
+borderRadiusInput.addEventListener('input', () => { borderRadiusSlider.value = borderRadiusInput.value; updateAll(); });
+
+bgWidthSlider.addEventListener('input', () => { bgWidthInput.value = bgWidthSlider.value; updateAll(); });
+bgWidthInput.addEventListener('input', () => { bgWidthSlider.value = bgWidthInput.value; updateAll(); });
+
+bgHeightSlider.addEventListener('input', () => { bgHeightInput.value = bgHeightSlider.value; updateAll(); });
+bgHeightInput.addEventListener('input', () => { bgHeightSlider.value = bgHeightInput.value; updateAll(); });
+
+posxSlider.addEventListener('input', () => { posxInput.value = posxSlider.value; updateAll(); });
+posxInput.addEventListener('input', () => { posxSlider.value = posxInput.value; updateAll(); });
+
+posySlider.addEventListener('input', () => { posyInput.value = posySlider.value; updateAll(); });
+posyInput.addEventListener('input', () => { posySlider.value = posyInput.value; updateAll(); });
+
+
+// その他のUIイベントリスナー
+[fontSelect, colorPicker, dateToggle, dayToggle, formatSelect, borderToggle, borderColorPicker].forEach(element => {
+    element.addEventListener('change', updateAll);
 });
 
 copyButton.addEventListener('click', () => {
@@ -178,16 +205,13 @@ function applySettingsFromUrl() {
 
     if (font) {
         fontSelect.value = font;
-        root.style.setProperty('--clock-font', font);
     }
     if (color) {
         colorPicker.value = `#${color}`;
-        root.style.setProperty('--clock-color', `#${color}`);
     }
     if (size) {
         sizeSlider.value = size;
-        root.style.setProperty('--clock-size', `${size}px`);
-        sizeValueSpan.textContent = `${size}px`;
+        sizeInput.value = size;
     }
     if (date) {
         dateToggle.checked = date === 'true';
@@ -206,40 +230,30 @@ function applySettingsFromUrl() {
     }
     if (borderWidth) {
         borderWidthSlider.value = borderWidth;
-        borderWidthValueSpan.textContent = `${borderWidth}px`;
+        borderWidthInput.value = borderWidth;
     }
     if (borderRadius) {
         borderRadiusSlider.value = borderRadius;
-        borderRadiusValueSpan.textContent = `${borderRadius}px`;
+        borderRadiusInput.value = borderRadius;
     }
     if (posX) {
         posxSlider.value = posX;
-        posxValueSpan.textContent = `${posX}%`;
+        posxInput.value = posX;
     }
     if (posY) {
         posySlider.value = posY;
-        posyValueSpan.textContent = `${posY}%`;
+        posyInput.value = posY;
     }
     if (bgWidth) {
         bgWidthSlider.value = bgWidth;
-        bgWidthValueSpan.textContent = `${bgWidth}px`;
+        bgWidthInput.value = bgWidth;
     }
     if (bgHeight) {
         bgHeightSlider.value = bgHeight;
-        bgHeightValueSpan.textContent = `${bgHeight}px`;
+        bgHeightInput.value = bgHeight;
     }
 
-    // 初期化時にもCSS変数を設定
-    root.style.setProperty('--border-width', `${borderToggle.checked ? borderWidthSlider.value : 0}px`);
-    root.style.setProperty('--border-color', borderColorPicker.value);
-    root.style.setProperty('--border-radius', `${borderRadiusSlider.value}px`);
-    root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
-    root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
-    root.style.setProperty('--pos-x', `${posxSlider.value}%`);
-    root.style.setProperty('--pos-y', `${posySlider.value}%`);
-
-    updateClock();
-    updateUrl();
+    updateAll();
 }
 
 applySettingsFromUrl();
