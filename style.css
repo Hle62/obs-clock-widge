@@ -29,7 +29,7 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center; /* プレビューとコントロールパネルを上下中央に配置 */
     height: 100vh;
     padding-top: 50px;
 }
@@ -37,7 +37,7 @@ body {
 #app {
     display: flex;
     gap: 50px;
-    align-items: flex-start;
+    align-items: center; /* プレビューとコントロールパネルを上下中央に配置 */
 }
 
 /*
@@ -83,6 +83,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 15px var(--shadow-color);
     width: 300px;
+    max-height: 80vh; /* 画面の高さの80%までに制限 */
+    overflow-y: auto; /* 80vhを超えたら縦スクロール可能にする */
 }
 
 #control-panel h2, #control-panel h3 {
