@@ -104,10 +104,10 @@ function updateUrl() {
 
         // 背景枠の表示・非表示
         if (borderToggle.checked) {
-            clockElement.style.border = `${borderWidthSlider.value}px solid ${borderColorPicker.value}`;
-            clockElement.style.borderRadius = `${borderRadiusSlider.value}px`;
+            previewContainer.style.border = `${borderWidthSlider.value}px solid ${borderColorPicker.value}`;
+            previewContainer.style.borderRadius = `${borderRadiusSlider.value}px`;
         } else {
-            clockElement.style.border = 'none';
+            previewContainer.style.border = 'none';
         }
         
         // スライダーの値を更新
@@ -140,31 +140,56 @@ copyButton.addEventListener('click', () => {
 
 const previewContainer = document.getElementById('preview-container');
 let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let initialLeft = 0;
+let initialTop = 0;
 
 // マウスダウンでドラッグ開始
 clockElement.addEventListener('mousedown', (e) => {
     isDragging = true;
     clockElement.style.cursor = 'grabbing';
+    
+    // マウスの開始位置と時計の初期位置を記録
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    initialLeft = clockElement.offsetLeft;
+    initialTop = clockElement.offsetTop;
+
+    e.preventDefault(); // ドラッグ中のブラウザのデフォルト動作を無効化
 });
 
 // マウスを動かすたびに位置を更新
 previewContainer.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
+    
+    // ドラッグした距離を計算
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
 
-    // コンテナ内の相対位置を計算
-    const rect = previewContainer.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // 時計の中心がマウスの位置になるように調整
-    clockElement.style.left = `${x}px`;
-    clockElement.style.top = `${y}px`;
-
-    updateUrl(); // 位置変更時もURLを更新
+    // 新しい位置を計算し、境界内に収まるように調整
+    const newLeft = initialLeft + dx;
+    const newTop = initialTop + dy;
+    
+    // コンテナの境界内に収まるように調整
+    const containerRect = previewContainer.getBoundingClientRect();
+    const clockRect = clockElement.getBoundingClientRect();
+    
+    const maxLeft = containerRect.width - clockRect.width;
+    const maxTop = containerRect.height - clockRect.height;
+    
+    const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    const clampedTop = Math.max(0, Math.min(newTop, maxTop));
+    
+    // 新しい位置を適用
+    clockElement.style.left = `${clampedLeft}px`;
+    clockElement.style.top = `${clampedTop}px`;
+    
+    updateUrl();
 });
 
 // マウスアップでドラッグ終了
-previewContainer.addEventListener('mouseup', () => {
+window.addEventListener('mouseup', () => { // window全体でイベントを監視
     isDragging = false;
     clockElement.style.cursor = 'grab';
 });
@@ -216,8 +241,8 @@ function applySettingsFromUrl() {
     if (border) {
         borderToggle.checked = border === 'true';
         if (border === 'true') {
-            clockElement.style.border = `${borderWidth}px solid #${borderColor}`;
-            clockElement.style.borderRadius = `${borderRadius}px`;
+            previewContainer.style.border = `${borderWidth}px solid #${borderColor}`;
+            previewContainer.style.borderRadius = `${borderRadius}px`;
         }
     }
     if (borderColor) {

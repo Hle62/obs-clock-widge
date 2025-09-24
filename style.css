@@ -49,6 +49,11 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 15px var(--shadow-color);
     position: relative; /* 子要素の絶対配置を可能にする */
+    border-style: solid;
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
 }
 
 /*
@@ -65,11 +70,6 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%); /* 中央配置 */
-}
-
-/* 背景枠のスタイル */
-.clock-border {
-    border: 2px solid #FFFFFF;
 }
 
 /*
