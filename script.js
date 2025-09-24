@@ -296,6 +296,9 @@ function applySettingsFromUrl() {
     }
     if (previewBgColor) {
         previewBgColorPicker.value = `#${previewBgColor}`;
+    } else {
+        // URLに背景色が指定されていない場合、デフォルトの白に設定
+        previewBgColorPicker.value = `#FFFFFF`;
     }
 
     updateAll();
