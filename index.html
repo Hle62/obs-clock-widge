@@ -59,6 +59,33 @@
             <hr>
 
             <div class="control-group">
+                <h3>背景枠</h3>
+                <label for="border-toggle">背景枠を表示</label>
+                <input type="checkbox" id="border-toggle">
+            </div>
+            
+            <div class="control-group" id="border-controls">
+                <label for="border-color-picker">枠の色:</label>
+                <input type="color" id="border-color-picker" value="#FFFFFF">
+            </div>
+
+            <div class="control-group" id="border-width-controls">
+                <label for="border-width-slider">枠の太さ:</label>
+                <input type="range" id="border-width-slider" min="0" max="10" value="2">
+                <span id="border-width-value">2px</span>
+            </div>
+
+            <div class="control-group" id="border-radius-controls">
+                <label for="border-radius-slider">角丸:</label>
+                <input type="range" id="border-radius-slider" min="0" max="30" value="10">
+                <span id="border-radius-value">10px</span>
+            </div>
+
+            <p>※時計はドラッグで動かせます</p>
+
+            <hr>
+
+            <div class="control-group">
                 <h3>OBS用URL</h3>
                 <input type="text" id="obs-url-input" readonly>
                 <button id="copy-button">コピー</button>

@@ -47,10 +47,8 @@ body {
     height: 200px;
     background-color: rgba(45, 45, 45, 0.8);
     border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     box-shadow: 0 4px 15px var(--shadow-color);
+    position: relative; /* 子要素の絶対配置を可能にする */
 }
 
 /*
@@ -61,7 +59,17 @@ body {
     color: var(--clock-color);
     font-size: var(--clock-size);
     text-shadow: 2px 2px 6px var(--shadow-color);
-    transition: all 0.3s ease; /* スムーズなアニメーション */
+    transition: all 0.3s ease;
+    cursor: grab; /* ドラッグ可能なカーソルに変更 */
+    position: absolute; /* 親要素内で自由に配置 */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* 中央配置 */
+}
+
+/* 背景枠のスタイル */
+.clock-border {
+    border: 2px solid #FFFFFF;
 }
 
 /*
