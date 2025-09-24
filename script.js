@@ -38,6 +38,8 @@ const posxInput = document.getElementById('pos-x-input');
 const posySlider = document.getElementById('pos-y-slider');
 const posyInput = document.getElementById('pos-y-input');
 
+const bgToggle = document.getElementById('bg-toggle');
+
 
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
@@ -104,7 +106,8 @@ function updateUrl() {
         posX: posxSlider.value,
         posY: posySlider.value,
         bgWidth: bgWidthSlider.value,
-        bgHeight: bgHeightSlider.value
+        bgHeight: bgHeightSlider.value,
+        bg: bgToggle.checked ? 'true' : 'false' // 背景のオンオフを追加
     };
 
     const params = new URLSearchParams(settings);
@@ -127,6 +130,14 @@ function updateAll() {
 
     root.style.setProperty('--pos-x', `${posxSlider.value}%`);
     root.style.setProperty('--pos-y', `${posySlider.value}%`);
+    
+    // 背景のオンオフ
+    if(bgToggle.checked) {
+        previewContainer.style.backgroundColor = 'rgba(45, 45, 45, 0.8)';
+    } else {
+        previewContainer.style.backgroundColor = 'transparent';
+    }
+
 
     if (borderToggle.checked) {
         root.style.setProperty('--border-width', `${borderWidthSlider.value}px`);
@@ -164,7 +175,7 @@ posyInput.addEventListener('input', () => { posySlider.value = posyInput.value; 
 
 
 // その他のUIイベントリスナー
-[fontSelect, colorPicker, dateToggle, dayToggle, formatSelect, borderToggle, borderColorPicker].forEach(element => {
+[fontSelect, colorPicker, dateToggle, dayToggle, formatSelect, borderToggle, borderColorPicker, bgToggle].forEach(element => {
     element.addEventListener('change', updateAll);
 });
 
@@ -202,6 +213,7 @@ function applySettingsFromUrl() {
     const posY = params.get('posY');
     const bgWidth = params.get('bgWidth');
     const bgHeight = params.get('bgHeight');
+    const bg = params.get('bg');
 
     if (font) {
         fontSelect.value = font;
@@ -252,8 +264,12 @@ function applySettingsFromUrl() {
         bgHeightSlider.value = bgHeight;
         bgHeightInput.value = bgHeight;
     }
+    if (bg) {
+        bgToggle.checked = bg === 'true';
+    }
 
     updateAll();
+    updateClock();
 }
 
 applySettingsFromUrl();
