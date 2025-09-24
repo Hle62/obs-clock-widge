@@ -18,16 +18,19 @@
     --bg-height: 200px;
     --pos-x: 50%;
     --pos-y: 50%;
-    --border-width: 0px; /* デフォルトを0pxに設定 */
+    --border-width: 0px;
     --border-color: #FFFFFF;
     --border-radius: 10px;
+    --preview-bg-color: #222222;
+    --text-shadow-value: 2px 2px 6px var(--shadow-color);
+    --box-shadow-value: 0 4px 15px var(--shadow-color);
 }
 
 /* * 全体的な設定
  */
 body {
     /* OBSでの背景透過を可能にする */
-    background-color: transparent; 
+    background-color: var(--preview-bg-color); 
     
     font-family: 'Roboto', sans-serif;
     color: #f0f0f0;
@@ -59,7 +62,7 @@ body {
     height: var(--bg-height);
     background-color: rgba(45, 45, 45, 0.8);
     border-radius: 10px;
-    box-shadow: 0 4px 15px var(--shadow-color);
+    box-shadow: var(--box-shadow-value);
     position: relative; /* 子要素の絶対配置を可能にする */
     border-style: solid;
     border-width: var(--border-width);
@@ -76,7 +79,7 @@ body {
     font-family: var(--clock-font);
     color: var(--clock-color);
     font-size: var(--clock-size);
-    text-shadow: 2px 2px 6px var(--shadow-color);
+    text-shadow: var(--text-shadow-value);
     transition: all 0.3s ease;
     cursor: default; /* カーソルをデフォルトに戻す */
     position: absolute; /* 親要素内で自由に配置 */

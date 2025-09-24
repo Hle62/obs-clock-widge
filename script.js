@@ -39,7 +39,9 @@ const posySlider = document.getElementById('pos-y-slider');
 const posyInput = document.getElementById('pos-y-input');
 
 const bgToggle = document.getElementById('bg-toggle');
-
+const textShadowToggle = document.getElementById('text-shadow-toggle');
+const boxShadowToggle = document.getElementById('box-shadow-toggle');
+const previewBgColorPicker = document.getElementById('preview-bg-color-picker');
 
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
@@ -107,17 +109,14 @@ function updateUrl() {
         posY: posySlider.value,
         bgWidth: bgWidthSlider.value,
         bgHeight: bgHeightSlider.value,
-        bg: bgToggle.checked ? 'true' : 'false' // 背景のオンオフを追加
+        bg: bgToggle.checked ? 'true' : 'false',
+        textShadow: textShadowToggle.checked ? 'true' : 'false',
+        boxShadow: boxShadowToggle.checked ? 'true' : 'false',
+        previewBgColor: previewBgColorPicker.value.replace('#', '')
     };
 
     const params = new URLSearchParams(settings);
     obsUrlInput.value = `${baseUrl}?${params.toString()}`;
-}
-
-// スライダーと入力欄の値を同期させる関数
-function syncValues(slider, input) {
-    slider.value = input.value;
-    updateAll();
 }
 
 function updateAll() {
@@ -138,7 +137,6 @@ function updateAll() {
         previewContainer.style.backgroundColor = 'transparent';
     }
 
-
     if (borderToggle.checked) {
         root.style.setProperty('--border-width', `${borderWidthSlider.value}px`);
         root.style.setProperty('--border-color', borderColorPicker.value);
@@ -147,35 +145,43 @@ function updateAll() {
         root.style.setProperty('--border-width', `0px`);
     }
 
+    if (textShadowToggle.checked) {
+        root.style.setProperty('--text-shadow-value', '2px 2px 6px rgba(0, 0, 0, 0.5)');
+    } else {
+        root.style.setProperty('--text-shadow-value', 'none');
+    }
+
+    if (boxShadowToggle.checked) {
+        root.style.setProperty('--box-shadow-value', '0 4px 15px rgba(0, 0, 0, 0.6)');
+    } else {
+        root.style.setProperty('--box-shadow-value', 'none');
+    }
+
+    root.style.setProperty('--preview-bg-color', previewBgColorPicker.value);
+
     updateClock();
     updateUrl();
 }
 
-// スライダーと入力欄のイベントリスナーを設定
-sizeSlider.addEventListener('input', () => { sizeInput.value = sizeSlider.value; updateAll(); });
-sizeInput.addEventListener('input', () => { sizeSlider.value = sizeInput.value; updateAll(); });
+const allElements = [
+    fontSelect, colorPicker, sizeSlider, sizeInput, dateToggle, dayToggle, formatSelect,
+    borderToggle, borderColorPicker, borderWidthSlider, borderWidthInput, borderRadiusSlider, borderRadiusInput,
+    bgWidthSlider, bgWidthInput, bgHeightSlider, bgHeightInput,
+    posxSlider, posxInput, posySlider, posyInput,
+    bgToggle, textShadowToggle, boxShadowToggle, previewBgColorPicker
+];
 
-borderWidthSlider.addEventListener('input', () => { borderWidthInput.value = borderWidthSlider.value; updateAll(); });
-borderWidthInput.addEventListener('input', () => { borderWidthSlider.value = borderWidthInput.value; updateAll(); });
-
-borderRadiusSlider.addEventListener('input', () => { borderRadiusInput.value = borderRadiusSlider.value; updateAll(); });
-borderRadiusInput.addEventListener('input', () => { borderRadiusSlider.value = borderRadiusInput.value; updateAll(); });
-
-bgWidthSlider.addEventListener('input', () => { bgWidthInput.value = bgWidthSlider.value; updateAll(); });
-bgWidthInput.addEventListener('input', () => { bgWidthSlider.value = bgWidthInput.value; updateAll(); });
-
-bgHeightSlider.addEventListener('input', () => { bgHeightInput.value = bgHeightSlider.value; updateAll(); });
-bgHeightInput.addEventListener('input', () => { bgHeightSlider.value = bgHeightInput.value; updateAll(); });
-
-posxSlider.addEventListener('input', () => { posxInput.value = posxSlider.value; updateAll(); });
-posxInput.addEventListener('input', () => { posxSlider.value = posxInput.value; updateAll(); });
-
-posySlider.addEventListener('input', () => { posyInput.value = posySlider.value; updateAll(); });
-posyInput.addEventListener('input', () => { posySlider.value = posyInput.value; updateAll(); });
-
-
-// その他のUIイベントリスナー
-[fontSelect, colorPicker, dateToggle, dayToggle, formatSelect, borderToggle, borderColorPicker, bgToggle].forEach(element => {
+allElements.forEach(element => {
+    element.addEventListener('input', () => {
+        // スライダーと入力欄の同期
+        if (element.type === 'range') {
+            document.getElementById(element.id.replace('slider', 'input')).value = element.value;
+        } else if (element.type === 'number') {
+            document.getElementById(element.id.replace('input', 'slider')).value = element.value;
+        }
+        updateAll();
+    });
+    // changeイベントも追加
     element.addEventListener('change', updateAll);
 });
 
@@ -214,6 +220,9 @@ function applySettingsFromUrl() {
     const bgWidth = params.get('bgWidth');
     const bgHeight = params.get('bgHeight');
     const bg = params.get('bg');
+    const textShadow = params.get('textShadow');
+    const boxShadow = params.get('boxShadow');
+    const previewBgColor = params.get('previewBgColor');
 
     if (font) {
         fontSelect.value = font;
@@ -266,6 +275,15 @@ function applySettingsFromUrl() {
     }
     if (bg) {
         bgToggle.checked = bg === 'true';
+    }
+    if (textShadow) {
+        textShadowToggle.checked = textShadow === 'true';
+    }
+    if (boxShadow) {
+        boxShadowToggle.checked = boxShadow === 'true';
+    }
+    if (previewBgColor) {
+        previewBgColorPicker.value = `#${previewBgColor}`;
     }
 
     updateAll();
