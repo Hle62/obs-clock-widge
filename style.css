@@ -18,6 +18,9 @@
     --bg-height: 200px;
     --pos-x: 50%;
     --pos-y: 50%;
+    --border-width: 0px; /* デフォルトを0pxに設定 */
+    --border-color: #FFFFFF;
+    --border-radius: 10px;
 }
 
 /* * 全体的な設定

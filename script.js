@@ -6,6 +6,7 @@ const sizeSlider = document.getElementById('size-slider');
 const sizeValueSpan = document.getElementById('size-value');
 const obsUrlInput = document.getElementById('obs-url-input');
 const copyButton = document.getElementById('copy-button');
+const previewContainer = document.getElementById('preview-container');
 
 // 新しいHTML要素を取得
 const dateToggle = document.getElementById('date-toggle');
@@ -36,7 +37,7 @@ const posyValueSpan = document.getElementById('pos-y-value');
 const root = document.documentElement;
 
 // ----------------------------------------------------
-// 新しい時刻更新関数
+// 時刻更新関数
 // ----------------------------------------------------
 
 function updateClock() {
@@ -49,16 +50,14 @@ function updateClock() {
     if (is12HourFormat) {
         ampm = hours >= 12 ? ' PM' : ' AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // 0時を12時に変換
+        hours = hours ? hours : 12;
     }
 
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
     
-    // 時刻文字列を生成
     let timeString = `${String(hours).padStart(2, '0')}:${minutes}:${seconds}${ampm}`;
 
-    // 日付と曜日の表示/非表示をチェック
     let dateString = '';
     let dayString = '';
 
@@ -74,7 +73,6 @@ function updateClock() {
         dayString = `(${days[now.getDay()]})`;
     }
 
-    // すべての要素を結合して時計を更新
     const displayString = `${timeString} ${dateString} ${dayString}`.trim();
     clockElement.textContent = displayString;
 }
@@ -93,15 +91,12 @@ function updateUrl() {
         date: dateToggle.checked ? 'true' : 'false',
         day: dayToggle.checked ? 'true' : 'false',
         format: formatSelect.value,
-        // 新しい設定項目を追加
         border: borderToggle.checked ? 'true' : 'false',
         borderColor: borderColorPicker.value.replace('#', ''),
         borderWidth: borderWidthSlider.value,
         borderRadius: borderRadiusSlider.value,
-        // 位置情報も追加
         posX: posxSlider.value,
         posY: posySlider.value,
-        // 新しい設定項目を追加
         bgWidth: bgWidthSlider.value,
         bgHeight: bgHeightSlider.value
     };
@@ -110,39 +105,30 @@ function updateUrl() {
     obsUrlInput.value = `${baseUrl}?${params.toString()}`;
 }
 
-// すべてのUI要素のイベントリスナーを一つの配列で管理
-[
+const allElements = [
     fontSelect, colorPicker, sizeSlider, dateToggle, dayToggle, formatSelect,
     borderToggle, borderColorPicker, borderWidthSlider, borderRadiusSlider,
-    bgWidthSlider, bgHeightSlider,
-    posxSlider, posySlider
-].forEach(element => {
+    bgWidthSlider, bgHeightSlider, posxSlider, posySlider
+];
+
+allElements.forEach(element => {
     element.addEventListener('input', () => {
         root.style.setProperty('--clock-font', fontSelect.value);
         root.style.setProperty('--clock-color', colorPicker.value);
         root.style.setProperty('--clock-size', `${sizeSlider.value}px`);
-
-        // 背景サイズの更新
         root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
         root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
-
-        // 背景枠の表示・非表示
-        if (borderToggle.checked) {
-            previewContainer.style.borderStyle = 'solid';
-        } else {
-            previewContainer.style.borderStyle = 'none';
-        }
-        
-        // 枠の太さ、色、角丸を更新
-        previewContainer.style.borderColor = borderColorPicker.value;
-        previewContainer.style.borderWidth = `${borderWidthSlider.value}px`;
-        previewContainer.style.borderRadius = `${borderRadiusSlider.value}px`;
-        
-        // 位置の更新
         root.style.setProperty('--pos-x', `${posxSlider.value}%`);
         root.style.setProperty('--pos-y', `${posySlider.value}%`);
+
+        if (borderToggle.checked) {
+            root.style.setProperty('--border-width', `${borderWidthSlider.value}px`);
+            root.style.setProperty('--border-color', borderColorPicker.value);
+            root.style.setProperty('--border-radius', `${borderRadiusSlider.value}px`);
+        } else {
+            root.style.setProperty('--border-width', `0px`);
+        }
         
-        // スライダーの値を更新
         borderWidthValueSpan.textContent = `${borderWidthSlider.value}px`;
         borderRadiusValueSpan.textContent = `${borderRadiusSlider.value}px`;
         bgWidthValueSpan.textContent = `${bgWidthSlider.value}px`;
@@ -155,7 +141,6 @@ function updateUrl() {
     });
 });
 
-// コピーボタンのイベントリスナー
 copyButton.addEventListener('click', () => {
     obsUrlInput.select();
     navigator.clipboard.writeText(obsUrlInput.value)
@@ -182,15 +167,12 @@ function applySettingsFromUrl() {
     const date = params.get('date');
     const day = params.get('day');
     const format = params.get('format');
-    // 新しい設定項目を追加
     const border = params.get('border');
     const borderColor = params.get('borderColor');
     const borderWidth = params.get('borderWidth');
     const borderRadius = params.get('borderRadius');
-    // 位置情報も追加
     const posX = params.get('posX');
     const posY = params.get('posY');
-    // 新しい設定項目
     const bgWidth = params.get('bgWidth');
     const bgHeight = params.get('bgHeight');
 
@@ -216,17 +198,9 @@ function applySettingsFromUrl() {
     if (format) {
         formatSelect.value = format;
     }
-    // 新しい設定を適用
     if (border) {
         borderToggle.checked = border === 'true';
     }
-    
-    if (borderToggle.checked) {
-        previewContainer.style.borderStyle = 'solid';
-    } else {
-        previewContainer.style.borderStyle = 'none';
-    }
-
     if (borderColor) {
         borderColorPicker.value = `#${borderColor}`;
     }
@@ -238,28 +212,31 @@ function applySettingsFromUrl() {
         borderRadiusSlider.value = borderRadius;
         borderRadiusValueSpan.textContent = `${borderRadius}px`;
     }
-    // 位置情報を適用
     if (posX) {
         posxSlider.value = posX;
         posxValueSpan.textContent = `${posX}%`;
-        root.style.setProperty('--pos-x', `${posX}%`);
     }
     if (posY) {
         posySlider.value = posY;
         posyValueSpan.textContent = `${posY}%`;
-        root.style.setProperty('--pos-y', `${posY}%`);
     }
-    // 新しい設定を適用
     if (bgWidth) {
         bgWidthSlider.value = bgWidth;
         bgWidthValueSpan.textContent = `${bgWidth}px`;
-        root.style.setProperty('--bg-width', `${bgWidth}px`);
     }
     if (bgHeight) {
         bgHeightSlider.value = bgHeight;
         bgHeightValueSpan.textContent = `${bgHeight}px`;
-        root.style.setProperty('--bg-height', `${bgHeight}px`);
     }
+
+    // 初期化時にもCSS変数を設定
+    root.style.setProperty('--border-width', `${borderToggle.checked ? borderWidthSlider.value : 0}px`);
+    root.style.setProperty('--border-color', borderColorPicker.value);
+    root.style.setProperty('--border-radius', `${borderRadiusSlider.value}px`);
+    root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
+    root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
+    root.style.setProperty('--pos-x', `${posxSlider.value}%`);
+    root.style.setProperty('--pos-y', `${posySlider.value}%`);
 
     updateClock();
     updateUrl();
