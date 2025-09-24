@@ -14,6 +14,8 @@
     --clock-color: #FFFFFF;
     --clock-size: 60px;
     --shadow-color: rgba(0, 0, 0, 0.6);
+    --bg-width: 500px;
+    --bg-height: 200px;
 }
 
 /* * 全体的な設定
@@ -43,8 +45,8 @@ body {
  * OBSで時計のサイズを調整する際のガイドとして機能
  */
 #preview-container {
-    width: 500px;
-    height: 200px;
+    width: var(--bg-width);
+    height: var(--bg-height);
     background-color: rgba(45, 45, 45, 0.8);
     border-radius: 10px;
     box-shadow: 0 4px 15px var(--shadow-color);

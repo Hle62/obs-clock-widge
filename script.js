@@ -20,6 +20,12 @@ const borderWidthValueSpan = document.getElementById('border-width-value');
 const borderRadiusSlider = document.getElementById('border-radius-slider');
 const borderRadiusValueSpan = document.getElementById('border-radius-value');
 
+// 新しい要素を追加
+const bgWidthSlider = document.getElementById('bg-width-slider');
+const bgWidthValueSpan = document.getElementById('bg-width-value');
+const bgHeightSlider = document.getElementById('bg-height-slider');
+const bgHeightValueSpan = document.getElementById('bg-height-value');
+
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
 
@@ -86,9 +92,11 @@ function updateUrl() {
         borderColor: borderColorPicker.value.replace('#', ''),
         borderWidth: borderWidthSlider.value,
         borderRadius: borderRadiusSlider.value,
-        // 位置情報も追加
         left: clockElement.style.left,
-        top: clockElement.style.top
+        top: clockElement.style.top,
+        // 新しい設定項目を追加
+        bgWidth: bgWidthSlider.value,
+        bgHeight: bgHeightSlider.value
     };
 
     const params = new URLSearchParams(settings);
@@ -96,7 +104,11 @@ function updateUrl() {
 }
 
 // すべてのUI要素のイベントリスナーを一つの配列で管理
-[fontSelect, colorPicker, sizeSlider, dateToggle, dayToggle, formatSelect, borderToggle, borderColorPicker, borderWidthSlider, borderRadiusSlider].forEach(element => {
+[
+    fontSelect, colorPicker, sizeSlider, dateToggle, dayToggle, formatSelect,
+    borderToggle, borderColorPicker, borderWidthSlider, borderRadiusSlider,
+    bgWidthSlider, bgHeightSlider // 新しい要素を追加
+].forEach(element => {
     element.addEventListener('change', () => {
         root.style.setProperty('--clock-font', fontSelect.value);
         root.style.setProperty('--clock-color', colorPicker.value);
@@ -113,6 +125,8 @@ function updateUrl() {
         // スライダーの値を更新
         borderWidthValueSpan.textContent = `${borderWidthSlider.value}px`;
         borderRadiusValueSpan.textContent = `${borderRadiusSlider.value}px`;
+        bgWidthValueSpan.textContent = `${bgWidthSlider.value}px`;
+        bgHeightValueSpan.textContent = `${bgHeightSlider.value}px`;
 
         updateClock();
         updateUrl();
@@ -167,7 +181,7 @@ previewContainer.addEventListener('mousemove', (e) => {
     const dx = e.clientX - dragStartX;
     const dy = e.clientY - dragStartY;
 
-    // 新しい位置を計算し、境界内に収まるように調整
+    // 新しい位置を計算
     const newLeft = initialLeft + dx;
     const newTop = initialTop + dy;
     
@@ -214,6 +228,9 @@ function applySettingsFromUrl() {
     // 位置情報も追加
     const left = params.get('left');
     const top = params.get('top');
+    // 新しい設定項目
+    const bgWidth = params.get('bgWidth');
+    const bgHeight = params.get('bgHeight');
 
     if (font) {
         fontSelect.value = font;
@@ -262,6 +279,17 @@ function applySettingsFromUrl() {
     }
     if (top) {
         clockElement.style.top = top;
+    }
+    // 新しい設定を適用
+    if (bgWidth) {
+        bgWidthSlider.value = bgWidth;
+        bgWidthValueSpan.textContent = `${bgWidth}px`;
+        root.style.setProperty('--bg-width', `${bgWidth}px`);
+    }
+    if (bgHeight) {
+        bgHeightSlider.value = bgHeight;
+        bgHeightValueSpan.textContent = `${bgHeight}px`;
+        root.style.setProperty('--bg-height', `${bgHeight}px`);
     }
 
     updateClock();
