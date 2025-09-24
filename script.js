@@ -109,29 +109,38 @@ function updateUrl() {
     borderToggle, borderColorPicker, borderWidthSlider, borderRadiusSlider,
     bgWidthSlider, bgHeightSlider // 新しい要素を追加
 ].forEach(element => {
-    element.addEventListener('change', () => {
+    element.addEventListener('input', () => { // `change`イベントを`input`イベントに変更
         root.style.setProperty('--clock-font', fontSelect.value);
         root.style.setProperty('--clock-color', colorPicker.value);
         root.style.setProperty('--clock-size', `${sizeSlider.value}px`);
 
+        // 背景サイズの更新
+        root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
+        root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
+        
         // 背景枠の表示・非表示
         if (borderToggle.checked) {
-            previewContainer.style.border = `${borderWidthSlider.value}px solid ${borderColorPicker.value}`;
-            previewContainer.style.borderRadius = `${borderRadiusSlider.value}px`;
+            previewContainer.style.borderStyle = 'solid';
         } else {
-            previewContainer.style.border = 'none';
+            previewContainer.style.borderStyle = 'none';
         }
+        
+        // 枠の太さ、色、角丸を更新
+        previewContainer.style.borderColor = borderColorPicker.value;
+        previewContainer.style.borderWidth = `${borderWidthSlider.value}px`;
+        previewContainer.style.borderRadius = `${borderRadiusSlider.value}px`;
         
         // スライダーの値を更新
         borderWidthValueSpan.textContent = `${borderWidthSlider.value}px`;
         borderRadiusValueSpan.textContent = `${borderRadiusSlider.value}px`;
         bgWidthValueSpan.textContent = `${bgWidthSlider.value}px`;
         bgHeightValueSpan.textContent = `${bgHeightSlider.value}px`;
-
+        
         updateClock();
         updateUrl();
     });
 });
+
 
 // コピーボタンのイベントリスナー
 copyButton.addEventListener('click', () => {
@@ -257,11 +266,14 @@ function applySettingsFromUrl() {
     // 新しい設定を適用
     if (border) {
         borderToggle.checked = border === 'true';
-        if (border === 'true') {
-            previewContainer.style.border = `${borderWidth}px solid #${borderColor}`;
-            previewContainer.style.borderRadius = `${borderRadius}px`;
-        }
     }
+    
+    if (borderToggle.checked) {
+        previewContainer.style.borderStyle = 'solid';
+    } else {
+        previewContainer.style.borderStyle = 'none';
+    }
+
     if (borderColor) {
         borderColorPicker.value = `#${borderColor}`;
     }
