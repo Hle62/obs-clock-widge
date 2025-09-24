@@ -137,6 +137,7 @@ function updateAll() {
         previewContainer.style.backgroundColor = 'transparent';
     }
 
+
     if (borderToggle.checked) {
         root.style.setProperty('--border-width', `${borderWidthSlider.value}px`);
         root.style.setProperty('--border-color', borderColorPicker.value);
@@ -183,6 +184,16 @@ allElements.forEach(element => {
     });
     // changeイベントも追加
     element.addEventListener('change', updateAll);
+});
+
+// 背景のオンオフと背景の影の連動機能を追加
+bgToggle.addEventListener('change', () => {
+    if (bgToggle.checked) {
+        boxShadowToggle.checked = true;
+    } else {
+        boxShadowToggle.checked = false;
+    }
+    updateAll();
 });
 
 copyButton.addEventListener('click', () => {
