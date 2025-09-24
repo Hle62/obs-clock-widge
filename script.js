@@ -7,16 +7,56 @@ const sizeValueSpan = document.getElementById('size-value');
 const obsUrlInput = document.getElementById('obs-url-input');
 const copyButton = document.getElementById('copy-button');
 
+// 新しいHTML要素を取得
+const dateToggle = document.getElementById('date-toggle');
+const dayToggle = document.getElementById('day-toggle');
+const formatSelect = document.getElementById('format-select');
+
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
 
-// 現在時刻を更新する関数
+// ----------------------------------------------------
+// 新しい時刻更新関数
+// ----------------------------------------------------
+
 function updateClock() {
     const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
+    const is12HourFormat = formatSelect.value === '12h';
+
+    let hours = now.getHours();
+    let ampm = '';
+
+    if (is12HourFormat) {
+        ampm = hours >= 12 ? ' PM' : ' AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // 0時を12時に変換
+    }
+
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    
+    // 時刻文字列を生成
+    let timeString = `${String(hours).padStart(2, '0')}:${minutes}:${seconds}${ampm}`;
+
+    // 日付と曜日の表示/非表示をチェック
+    let dateString = '';
+    let dayString = '';
+
+    if (dateToggle.checked) {
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        dateString = `${year}/${month}/${day}`;
+    }
+
+    if (dayToggle.checked) {
+        const days = ['日', '月', '火', '水', '木', '金', '土'];
+        dayString = `(${days[now.getDay()]})`;
+    }
+
+    // すべての要素を結合して時計を更新
+    const displayString = `${timeString} ${dateString} ${dayString}`.trim();
+    clockElement.textContent = displayString;
 }
 
 // ----------------------------------------------------
@@ -24,43 +64,43 @@ function updateClock() {
 // ----------------------------------------------------
 
 function updateUrl() {
-    // 現在のサイトURLを取得
     const baseUrl = window.location.origin + window.location.pathname;
 
-    // 設定値をオブジェクトにまとめる
+    // 新しい設定項目を追加
     const settings = {
         font: fontSelect.value,
-        color: colorPicker.value.replace('#', ''), // #を削除
-        size: sizeSlider.value
+        color: colorPicker.value.replace('#', ''),
+        size: sizeSlider.value,
+        date: dateToggle.checked ? 'true' : 'false',
+        day: dayToggle.checked ? 'true' : 'false',
+        format: formatSelect.value
     };
 
-    // URLSearchParamsオブジェクトでクエリパラメータを生成
     const params = new URLSearchParams(settings);
-
-    // 完成したURLをinputに表示
     obsUrlInput.value = `${baseUrl}?${params.toString()}`;
 }
 
-// フォント、色、サイズが変更されたらプレビューとURLを更新
-[fontSelect, colorPicker, sizeSlider].forEach(element => {
+// 新しいUI要素のイベントリスナーを追加
+[fontSelect, colorPicker, sizeSlider, dateToggle, dayToggle, formatSelect].forEach(element => {
     element.addEventListener('change', () => {
         // CSS変数を更新
         root.style.setProperty('--clock-font', fontSelect.value);
         root.style.setProperty('--clock-color', colorPicker.value);
         root.style.setProperty('--clock-size', `${sizeSlider.value}px`);
 
+        // 時計を更新
+        updateClock();
+
         // URLを更新
         updateUrl();
     });
 });
 
-// コピーボタンのクリックイベント
+// コピーボタンのイベントリスナー
 copyButton.addEventListener('click', () => {
-    // inputの内容をクリップボードにコピー
     obsUrlInput.select();
     navigator.clipboard.writeText(obsUrlInput.value)
         .then(() => {
-            // コピー成功時のフィードバック
             copyButton.textContent = 'コピーしました！';
             setTimeout(() => {
                 copyButton.textContent = 'コピー';
@@ -75,12 +115,14 @@ copyButton.addEventListener('click', () => {
 // ページの初期化
 // ----------------------------------------------------
 
-// URLのクエリパラメータを読み込んでデザインを適用
 function applySettingsFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const font = params.get('font');
     const color = params.get('color');
     const size = params.get('size');
+    const date = params.get('date');
+    const day = params.get('day');
+    const format = params.get('format');
 
     if (font) {
         fontSelect.value = font;
@@ -95,12 +137,19 @@ function applySettingsFromUrl() {
         root.style.setProperty('--clock-size', `${size}px`);
         sizeValueSpan.textContent = `${size}px`;
     }
+    if (date) {
+        dateToggle.checked = date === 'true';
+    }
+    if (day) {
+        dayToggle.checked = day === 'true';
+    }
+    if (format) {
+        formatSelect.value = format;
+    }
 
-    // 初回読み込み時にURLを生成
+    updateClock();
     updateUrl();
 }
 
-// ページ読み込み時の処理
 applySettingsFromUrl();
 setInterval(updateClock, 1000);
-updateClock();

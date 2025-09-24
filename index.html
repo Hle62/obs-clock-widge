@@ -36,7 +36,29 @@
                 <span id="size-value">60px</span>
             </div>
 
-            <hr> <div class="control-group">
+            <hr>
+
+            <div class="control-group">
+                <label for="date-toggle">日付を表示</label>
+                <input type="checkbox" id="date-toggle">
+            </div>
+
+            <div class="control-group">
+                <label for="day-toggle">曜日を表示</label>
+                <input type="checkbox" id="day-toggle">
+            </div>
+
+            <div class="control-group">
+                <label for="format-select">時刻形式</label>
+                <select id="format-select">
+                    <option value="24h">24時間表示</option>
+                    <option value="12h">12時間表示 (AM/PM)</option>
+                </select>
+            </div>
+
+            <hr>
+
+            <div class="control-group">
                 <h3>OBS用URL</h3>
                 <input type="text" id="obs-url-input" readonly>
                 <button id="copy-button">コピー</button>
