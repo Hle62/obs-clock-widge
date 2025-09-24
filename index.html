@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>OBS Clock Widget Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Oswald&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div id="preview-container">
+            <div id="clock"></div>
+        </div>
+        <div id="control-panel">
+            <h2>時計デザイン設定</h2>
+            
+            <div class="control-group">
+                <label for="font-select">フォント:</label>
+                <select id="font-select">
+                    <option value="Roboto">Roboto</option>
+                    <option value="Oswald">Oswald</option>
+                    <option value="Arial, sans-serif">Arial</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="color-picker">文字色:</label>
+                <input type="color" id="color-picker" value="#FFFFFF">
+            </div>
+
+            <div class="control-group">
+                <label for="size-slider">サイズ:</label>
+                <input type="range" id="size-slider" min="20" max="100" value="60">
+                <span id="size-value">60px</span>
+            </div>
+
+            <hr> <div class="control-group">
+                <h3>OBS用URL</h3>
+                <input type="text" id="obs-url-input" readonly>
+                <button id="copy-button">コピー</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

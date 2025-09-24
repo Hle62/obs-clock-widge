@@ -1,0 +1,144 @@
+/*
+ * Google Fonts
+ * Roboto: メインのフォント
+ * Oswald: 太字で存在感のあるフォント
+ */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap');
+
+/*
+ * カスタムプロパティ (CSS変数) の定義
+ * JavaScriptから動的に変更される値
+ */
+:root {
+    --clock-font: 'Oswald', sans-serif;
+    --clock-color: #FFFFFF;
+    --clock-size: 60px;
+    --shadow-color: rgba(0, 0, 0, 0.6);
+}
+
+/* * 全体的な設定
+ */
+body {
+    /* OBSでの背景透過を可能にする */
+    background-color: transparent; 
+    
+    font-family: 'Roboto', sans-serif;
+    color: #f0f0f0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    padding-top: 50px;
+}
+
+#app {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+/*
+ * 時計のプレビューコンテナ
+ * OBSで時計のサイズを調整する際のガイドとして機能
+ */
+#preview-container {
+    width: 500px;
+    height: 200px;
+    background-color: rgba(45, 45, 45, 0.8);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+/*
+ * 時計本体のデザイン
+ */
+#clock {
+    font-family: var(--clock-font);
+    color: var(--clock-color);
+    font-size: var(--clock-size);
+    text-shadow: 2px 2px 6px var(--shadow-color);
+    transition: all 0.3s ease; /* スムーズなアニメーション */
+}
+
+/*
+ * コントロールパネルのデザイン
+ */
+#control-panel {
+    background-color: rgba(45, 45, 45, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    width: 300px;
+}
+
+#control-panel h2, #control-panel h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/*
+ * フォーム部品のスタイル
+ */
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 50px;
+    height: 30px;
+    padding: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="range"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #555;
+    color: #f0f0f0;
+}
+
+#obs-url-input {
+    width: calc(100% - 70px);
+    padding: 8px;
+    border: 1px solid #666;
+    border-radius: 5px;
+    background-color: #333;
+    color: #f0f0f0;
+    cursor: text;
+}
+
+#copy-button {
+    padding: 8px 12px;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#copy-button:hover {
+    background-color: #0056b3;
+}
