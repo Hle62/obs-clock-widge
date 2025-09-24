@@ -21,7 +21,7 @@
     --border-width: 0px;
     --border-color: #FFFFFF;
     --border-radius: 10px;
-    --preview-bg-color: #222222;
+    --preview-bg-color: #FFFFFF; /* 背景色を白に変更 */
     --text-shadow-value: 2px 2px 6px var(--shadow-color);
     --box-shadow-value: 0 4px 15px var(--shadow-color);
 }
