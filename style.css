@@ -14,8 +14,10 @@
     --clock-color: #FFFFFF;
     --clock-size: 60px;
     --shadow-color: rgba(0, 0, 0, 0.6);
-    --bg-width: 600px;
-    --bg-height: 250px;
+    --bg-width: 500px;
+    --bg-height: 200px;
+    --pos-x: 50%;
+    --pos-y: 50%;
 }
 
 /* * 全体的な設定
@@ -73,10 +75,10 @@ body {
     font-size: var(--clock-size);
     text-shadow: 2px 2px 6px var(--shadow-color);
     transition: all 0.3s ease;
-    cursor: grab; /* ドラッグ可能なカーソルに変更 */
+    cursor: default; /* カーソルをデフォルトに戻す */
     position: absolute; /* 親要素内で自由に配置 */
-    left: 50%;
-    top: 50%;
+    left: var(--pos-x); /* 新しいX軸の位置変数 */
+    top: var(--pos-y); /* 新しいY軸の位置変数 */
     transform: translate(-50%, -50%); /* 中央配置 */
 }
 

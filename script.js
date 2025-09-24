@@ -26,6 +26,12 @@ const bgWidthValueSpan = document.getElementById('bg-width-value');
 const bgHeightSlider = document.getElementById('bg-height-slider');
 const bgHeightValueSpan = document.getElementById('bg-height-value');
 
+// 新しい要素を追加
+const posxSlider = document.getElementById('pos-x-slider');
+const posxValueSpan = document.getElementById('pos-x-value');
+const posySlider = document.getElementById('pos-y-slider');
+const posyValueSpan = document.getElementById('pos-y-value');
+
 // CSSのルート要素（:root）を取得
 const root = document.documentElement;
 
@@ -92,8 +98,9 @@ function updateUrl() {
         borderColor: borderColorPicker.value.replace('#', ''),
         borderWidth: borderWidthSlider.value,
         borderRadius: borderRadiusSlider.value,
-        left: clockElement.style.left,
-        top: clockElement.style.top,
+        // 位置情報も追加
+        posX: posxSlider.value,
+        posY: posySlider.value,
         // 新しい設定項目を追加
         bgWidth: bgWidthSlider.value,
         bgHeight: bgHeightSlider.value
@@ -107,9 +114,10 @@ function updateUrl() {
 [
     fontSelect, colorPicker, sizeSlider, dateToggle, dayToggle, formatSelect,
     borderToggle, borderColorPicker, borderWidthSlider, borderRadiusSlider,
-    bgWidthSlider, bgHeightSlider // 新しい要素を追加
+    bgWidthSlider, bgHeightSlider,
+    posxSlider, posySlider
 ].forEach(element => {
-    element.addEventListener('input', () => { // `change`イベントを`input`イベントに変更
+    element.addEventListener('input', () => {
         root.style.setProperty('--clock-font', fontSelect.value);
         root.style.setProperty('--clock-color', colorPicker.value);
         root.style.setProperty('--clock-size', `${sizeSlider.value}px`);
@@ -117,7 +125,7 @@ function updateUrl() {
         // 背景サイズの更新
         root.style.setProperty('--bg-width', `${bgWidthSlider.value}px`);
         root.style.setProperty('--bg-height', `${bgHeightSlider.value}px`);
-        
+
         // 背景枠の表示・非表示
         if (borderToggle.checked) {
             previewContainer.style.borderStyle = 'solid';
@@ -130,17 +138,22 @@ function updateUrl() {
         previewContainer.style.borderWidth = `${borderWidthSlider.value}px`;
         previewContainer.style.borderRadius = `${borderRadiusSlider.value}px`;
         
+        // 位置の更新
+        root.style.setProperty('--pos-x', `${posxSlider.value}%`);
+        root.style.setProperty('--pos-y', `${posySlider.value}%`);
+        
         // スライダーの値を更新
         borderWidthValueSpan.textContent = `${borderWidthSlider.value}px`;
         borderRadiusValueSpan.textContent = `${borderRadiusSlider.value}px`;
         bgWidthValueSpan.textContent = `${bgWidthSlider.value}px`;
         bgHeightValueSpan.textContent = `${bgHeightSlider.value}px`;
+        posxValueSpan.textContent = `${posxSlider.value}%`;
+        posyValueSpan.textContent = `${posySlider.value}%`;
         
         updateClock();
         updateUrl();
     });
 });
-
 
 // コピーボタンのイベントリスナー
 copyButton.addEventListener('click', () => {
@@ -155,66 +168,6 @@ copyButton.addEventListener('click', () => {
         .catch(err => {
             console.error('コピーに失敗しました:', err);
         });
-});
-
-// ----------------------------------------------------
-// ドラッグ＆ドロップ機能
-// ----------------------------------------------------
-
-const previewContainer = document.getElementById('preview-container');
-let isDragging = false;
-let dragStartX = 0;
-let dragStartY = 0;
-let initialLeft = 0;
-let initialTop = 0;
-
-// マウスダウンでドラッグ開始
-clockElement.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    clockElement.style.cursor = 'grabbing';
-    
-    // マウスの開始位置と時計の初期位置を記録
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    initialLeft = clockElement.offsetLeft;
-    initialTop = clockElement.offsetTop;
-
-    e.preventDefault(); // ドラッグ中のブラウザのデフォルト動作を無効化
-});
-
-// マウスを動かすたびに位置を更新
-previewContainer.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    
-    // ドラッグした距離を計算
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-
-    // 新しい位置を計算
-    const newLeft = initialLeft + dx;
-    const newTop = initialTop + dy;
-    
-    // コンテナの境界内に収まるように調整
-    const containerRect = previewContainer.getBoundingClientRect();
-    const clockRect = clockElement.getBoundingClientRect();
-    
-    const maxLeft = containerRect.width - clockRect.width;
-    const maxTop = containerRect.height - clockRect.height;
-    
-    const clampedLeft = Math.max(0, Math.min(newLeft, maxLeft));
-    const clampedTop = Math.max(0, Math.min(newTop, maxTop));
-    
-    // 新しい位置を適用
-    clockElement.style.left = `${clampedLeft}px`;
-    clockElement.style.top = `${clampedTop}px`;
-    
-    updateUrl();
-});
-
-// マウスアップでドラッグ終了
-window.addEventListener('mouseup', () => { // window全体でイベントを監視
-    isDragging = false;
-    clockElement.style.cursor = 'grab';
 });
 
 // ----------------------------------------------------
@@ -235,8 +188,8 @@ function applySettingsFromUrl() {
     const borderWidth = params.get('borderWidth');
     const borderRadius = params.get('borderRadius');
     // 位置情報も追加
-    const left = params.get('left');
-    const top = params.get('top');
+    const posX = params.get('posX');
+    const posY = params.get('posY');
     // 新しい設定項目
     const bgWidth = params.get('bgWidth');
     const bgHeight = params.get('bgHeight');
@@ -286,11 +239,15 @@ function applySettingsFromUrl() {
         borderRadiusValueSpan.textContent = `${borderRadius}px`;
     }
     // 位置情報を適用
-    if (left) {
-        clockElement.style.left = left;
+    if (posX) {
+        posxSlider.value = posX;
+        posxValueSpan.textContent = `${posX}%`;
+        root.style.setProperty('--pos-x', `${posX}%`);
     }
-    if (top) {
-        clockElement.style.top = top;
+    if (posY) {
+        posySlider.value = posY;
+        posyValueSpan.textContent = `${posY}%`;
+        root.style.setProperty('--pos-y', `${posY}%`);
     }
     // 新しい設定を適用
     if (bgWidth) {
